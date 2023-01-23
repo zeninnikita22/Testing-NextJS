@@ -4,9 +4,7 @@ export const getStaticPaths = async () => {
 
   const arrOfPaths = data.map((user) => {
     return {
-      params: {
-        id: user.id.toString(),
-      },
+      params: { usersid: user.id.toString() },
     };
   });
   return {
@@ -15,8 +13,20 @@ export const getStaticPaths = async () => {
   };
 };
 
-function Details() {
-  return <div>Details Page</div>;
+export const getStaticProps = async (context) => {
+  const id = context.params.usersid;
+  const response = await fetch(
+    "https://jsonplaceholder.typicode.com/users/" + id
+  );
+  const dataOfId = await response.json();
+
+  return {
+    props: { user: dataOfId },
+  };
+};
+
+function Details({ user }) {
+  return <div>{user.email}</div>;
 }
 
 export default Details;
